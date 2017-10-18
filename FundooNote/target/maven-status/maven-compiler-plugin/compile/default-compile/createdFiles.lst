@@ -1,0 +1,17 @@
+com/bridgeit/DAO/UserMapper.class
+com/bridgeit/Model/GmailEmail.class
+com/bridgeit/Model/GoogleProfile.class
+com/bridgeit/JSON/Response.class
+com/bridgeit/Validators/FormValidator.class
+com/bridgeit/MyBatisUtility/MyBatisUtil.class
+com/bridgeit/Services/GoogleLoginByRest.class
+com/bridgeit/Services/GoogleLogin.class
+com/bridgeit/Model/GoogleToken.class
+com/bridgeit/Controller/NavigationController.class
+com/bridgeit/DAO/UserMapperImpl.class
+com/bridgeit/Model/Login.class
+com/bridgeit/Model/Register.class
+com/bridgeit/Services/UserService.class
+com/bridgeit/Services/Email$1.class
+com/bridgeit/Controller/LoginController.class
+com/bridgeit/Services/Email.class
