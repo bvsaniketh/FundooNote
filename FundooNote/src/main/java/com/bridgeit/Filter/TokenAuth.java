@@ -58,7 +58,7 @@ public class TokenAuth implements Filter {
 		{
 			if(new Date().before(expdate))
 			{
-				System.out.println("Yipeeeeeeeeeeee");
+				System.out.println("Yes Inside Filter Pre Processing");
 				chain.doFilter(request, response);
 				System.out.println("Okay out of bounds I guess");
 			}
@@ -70,6 +70,13 @@ public class TokenAuth implements Filter {
 			System.out.println("Please Login Again");
 			resp.sendRedirect("/login");
 		}
+		catch(java.lang.IllegalArgumentException e)
+		{
+			System.out.println(e);
+			System.out.println("User needs to Login First. Cannot ACCESS");
+			resp.sendRedirect("/login");
+		}
+		
 	}
 	
 

@@ -26,11 +26,15 @@ public class ForgotController {
 	private String OTP;
 	private String usernameupdation;
 	
+	
 	@RequestMapping(value="forgot")
 	public String forgotpassword()
 	{
 		return "forgot";
 	}
+	
+	
+	/*Reset the password functionality*/
 	
 	@RequestMapping(value="reset")
 	public String resetpassword(ModelMap mv,HttpServletRequest request,HttpSession session)
@@ -47,6 +51,9 @@ public class ForgotController {
 		usernameupdation=reg.getName();
 		System.out.println(reg);
 		System.out.println(request.getParameter("name"));
+		
+		/*Send the OTP if valid credentials are entered*/
+		
 		String otpfinal=email.sendEmail(reg);
 		//mv.addAttribute("otp",otpfinal);
 		session.setAttribute("otp", otpfinal);
@@ -54,7 +61,9 @@ public class ForgotController {
 		System.out.println(otpfinal);
 		return "resetpassword";
 	}
-
+	
+	/*Validating OTP*/
+	
 	@RequestMapping(value="otp")
 	public String otp(ModelMap map,HttpServletRequest request,HttpSession session)
 	{
@@ -71,6 +80,8 @@ public class ForgotController {
 		map.addAttribute("Invalid","The OTP entered is invalid" );
 		return "resetpassword";
 	}
+	
+	/*Changing Password mapping */
 	
 	@RequestMapping(value="changepassword")
 	public ModelAndView changepassword(HttpServletRequest request,HttpSession session)

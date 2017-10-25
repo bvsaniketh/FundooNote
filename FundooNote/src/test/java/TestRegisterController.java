@@ -60,7 +60,7 @@ public class TestRegisterController {
 		user4.setPassword("jk");
 		
 		user5 = new Register();
-		user5.setName("Anibo");
+		user5.setName("Anibo1");
 		user5.setEmail("bvsaniketh@yahoo.co.in");
 		//user1.setAge(25);
 		user5.setMobile(472342);
@@ -69,7 +69,7 @@ public class TestRegisterController {
 	}
 
 	@Test
-	
+	@Ignore
 	public void testRegister() {
 		// String jsonString =user1.toJSONString;
 		System.out.println("testRegister user exists");
@@ -78,10 +78,10 @@ public class TestRegisterController {
 	}
 	
 	@Test
-	@Ignore
+	
 	public void insertUserWithoutAnyError() {
 		logger.info("insertUserWithoutAnyError()");
-		given().contentType("application/json").body(user4).when().post("fundooregister").then().statusCode(200);
+		given().contentType("application/json").body(user5).when().post("fundooregister").then().statusCode(200);
 		// assertThat(resp.getStatus(),equalTo(1));
 	}
 	

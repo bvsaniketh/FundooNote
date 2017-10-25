@@ -1,6 +1,7 @@
 package com.bridgeit.Controller;
 
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,8 @@ public class FundooRegisterController {
 	TaskExecutor taskExecutor;
 	
 	private Logger logger=Logger.getLogger(FundooRegisterController.class);
+	ObjectMapper mapperObj=new ObjectMapper();
+	/*Mapping for fundooregister*/
 	
 	@RequestMapping(value = "fundooregister", method = RequestMethod.POST, consumes="application/json", produces="application/json")
 	public @ResponseBody ResponseEntity<Response> insertUser(@RequestBody Register user, BindingResult bindResult) {
@@ -47,14 +50,14 @@ public class FundooRegisterController {
 			resp = new Response();
 			resp.setStatus(-1);
 			resp.setMessage("Entered invalid details");
-			return new ResponseEntity<Response>(resp, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Response>(resp, HttpStatus.BAD_REQUEST); //Case for invalid details
 		}
 		if (service.checkUserByEmail(user.getEmail()) != null) {
 			logger.info("email already exists");
 			resp = new Response();
 			resp.setStatus(-1);
 			resp.setMessage("User already exist");
-			return new ResponseEntity<Response>(resp, HttpStatus.CONFLICT);
+			return new ResponseEntity<Response>(resp, HttpStatus.CONFLICT); //Case for duplication of user details
 		}
 
 		
@@ -67,16 +70,21 @@ public class FundooRegisterController {
 			resp = new Response();
 			resp.setStatus(1);
 			resp.setMessage("User registered successfully!!!");
-			return new ResponseEntity<Response>(HttpStatus.OK);
+			String jsonStr=mapperObj.writeValueAsString(user);
+			System.out.println(jsonStr + " After converting to json from Java Object");
+			
+			return new ResponseEntity<Response>(HttpStatus.OK); //Case for new user registration
 		} catch (Exception e) {
 			logger.info("EXCEPTION OCCURED");
 			resp = new Response();
 			resp.setStatus(-1);
 			resp.setMessage("Internal server error");
-			return new ResponseEntity<Response>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<Response>(HttpStatus.INTERNAL_SERVER_ERROR); //Case for exception
 		}
 		
 	}
+	
+	//Testing API for Mapping
 	@RequestMapping(value="test" )
 	public void Test()
 	{

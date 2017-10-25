@@ -1,4 +1,5 @@
 package com.bridgeit.JMS;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 

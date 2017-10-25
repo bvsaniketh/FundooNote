@@ -47,7 +47,7 @@ public class TestNoteController {
 		
 		note3=new Note();
 		user3=new Register();
-		user3.setUser_id(4);
+		user3.setUser_id(1);
 		note3.setNotes_id(17);
 		note3.setUser(user3);
 		
@@ -77,8 +77,9 @@ public class TestNoteController {
 		note7=new Note();
 		user7=new Register();
 		user7.setUser_id(4);
-		note7.setNotes_id(18);
+		note7.setNotes_id(48);
 		note7.setTrash(true);
+		note7.setRemainder(new Date());
 		note7.setDeletefromtrash(false);
 		note7.setUser(user7);
 		
@@ -118,7 +119,7 @@ public class TestNoteController {
 	@Ignore
 	public void testInsertNote()
 	{
-		given().contentType(ContentType.JSON).body(note1).when().post("insertNote").then().statusCode(200);
+		given().contentType(ContentType.JSON).body(note3).when().post("insertNote").then().statusCode(200);
 	}
 	
 	@Test
@@ -173,9 +174,10 @@ public class TestNoteController {
 	}
 	
 	@Test
+	@Ignore
 	public void setRemainder()
 	{	logger.info("Setting Remainder");
-		Response resp=given().contentType(ContentType.JSON).body(note9).when().post("setRemainder");
+		Response resp=given().contentType(ContentType.JSON).body(note7).when().post("setRemainder");
 		logger.info(resp.asString());
 		logger.info(resp.then().statusCode(200));
 	}

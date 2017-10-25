@@ -1,4 +1,4 @@
-/*package com.bridgeit.Controller;
+package com.bridgeit.Controller;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bridgeit.DAO.UserMapperImpl;
+import com.bridgeit.Model.Login;
 import com.bridgeit.Model.Register;
 import com.bridgeit.Services.UserService;
 import com.bridgeit.Validators.FormValidator;
@@ -25,6 +26,19 @@ public class RegistrationController {
 	UserService service;
 	@Autowired
 	FormValidator formvalid;
+	
+	
+	@RequestMapping(value="Register",method=RequestMethod.GET)
+	public ModelAndView dologinbean1()
+	{
+		
+		ModelAndView mav=new ModelAndView("register");
+		Register user1=new Register();
+		mav.addObject("user1",user1);
+		return mav;
+		
+	}
+
 	
 	@RequestMapping(value="register",method=RequestMethod.POST)
 	public String adduser(@ModelAttribute("user1") Register user,BindingResult res,ModelMap ma)
@@ -54,4 +68,3 @@ public class RegistrationController {
 	
 	
 }
-*/

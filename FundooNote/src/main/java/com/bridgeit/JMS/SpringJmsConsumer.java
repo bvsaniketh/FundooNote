@@ -1,5 +1,4 @@
 package com.bridgeit.JMS;
- 
 
 import javax.jms.Destination;
 import javax.jms.JMSException;

@@ -18,7 +18,7 @@ import com.bridgeit.Model.Register;
 import com.bridgeit.Services.NoteService;
 
 @Controller
-/*@RequestMapping("auth/")*/
+@RequestMapping("auth/")
 public class NoteController {
 
 	private static final Logger logger=Logger.getLogger(NoteController.class);
@@ -32,11 +32,11 @@ public class NoteController {
 		logger.info("Before Inserting Note");
 		Note note=new Note();
 		Register user=new Register();
-		user.setUser_id(9);
+		user.setUser_id(note1.getUser().getUser_id());
 		note.setTitle("BatMan");
 		note.setDescription("To breathe and is purest");
 		note.setLastaccessdate(new Date());
-		note.setUser(user);
+		note.setUser(note1.getUser());
 		
 		/*logger.info(note1);
 		service.insertNote(note1);*/
