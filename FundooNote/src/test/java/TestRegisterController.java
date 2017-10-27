@@ -78,7 +78,7 @@ public class TestRegisterController {
 	}
 	
 	@Test
-	
+	@Ignore
 	public void insertUserWithoutAnyError() {
 		logger.info("insertUserWithoutAnyError()");
 		given().contentType("application/json").body(user5).when().post("fundooregister").then().statusCode(200);

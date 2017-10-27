@@ -2,8 +2,13 @@ package com.bridgeit.Model;
 
 import java.util.Date;
 
+/*import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;*/
+
+/*@Document(indexName="fundoonotestest",type="notestest")*/
 public class Note {
 	
+	/*@Id*/
 	private int notes_id;
 	private String title;
 	private String description;
