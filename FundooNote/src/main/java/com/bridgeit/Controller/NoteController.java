@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bridgeit.ElasticSearch.ElasticSearch;
 import com.bridgeit.JSON.Response;
 import com.bridgeit.Model.Note;
 import com.bridgeit.Model.Register;
@@ -24,6 +25,10 @@ public class NoteController {
 	private static final Logger logger=Logger.getLogger(NoteController.class);
 	@Autowired
 	NoteService service;
+	
+	@Autowired
+	ElasticSearch elasticsearch;
+	
 	Response resp=new Response();
 	
 	@RequestMapping(value="insertNote",method=RequestMethod.POST)
@@ -104,6 +109,17 @@ public class NoteController {
 		List<Note>notes=service.selectAllNotes(note5);
 		logger.info("After selectAllNotes");
 		logger.info(notes);
+		elasticsearch.getAllNotes(notes);
+		return new ResponseEntity<Response>(resp,HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="serchAllNotesElastic",method=RequestMethod.POST)
+	@ResponseBody public ResponseEntity<Response>selectAllNotesElastic(@RequestBody Note note5 ,String content)
+	{
+		logger.info("Searching Elastic searcAllNotes");
+		logger.info(content);
+		elasticsearch.searchElasticNotes(content);
+		logger.info("After Search Elastic All Notes");
 		return new ResponseEntity<Response>(resp,HttpStatus.OK);
 	}
 	
@@ -159,4 +175,5 @@ public class NoteController {
 		resp.setMessage("Remainder for the user " + note9.getUser().getUser_id()+" and note number of a " + note9.getNotes_id() +" has been set succesfully to the note by the user");
 		return new ResponseEntity<Response>(resp,HttpStatus.OK);
 	}
+	
 }

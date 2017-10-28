@@ -1,46 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
   'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
- <mapper namespace="com.bridgeit.DAO.NoteMapper">
- 
- <resultMap type="NoteBean" id="Note">
- <id property="notes_id" column="notes_id"/>
- <result property="title" column="title"/>
- <result property="description" column="description"/>
- <result property="user_id" column="user_id"/>
- <result property="lastaccessdate" column="lastaccessdate"/>
- </resultMap>
- 
- <insert id="insertNote" parameterType="NoteBean" useGeneratedKeys="true">
- insert into fundoonote(title,description,user_id,lastaccessdate)
- values(#{title},#{description},#{user.user_id},#{lastaccessdate})
- </insert>
- 
-<update id="updateNote" parameterType="NoteBean">
-update fundoonote set title=#{title},description=#{description} where notes_id=#{notes_id}
-</update>
- 
-<delete id="deleteNote" parameterType="NoteBean">
-delete from fundoonote where notes_id=#{notes_id} and user_id=#{user.user_id}
-</delete>
+<mapper namespace="com.bridgeit.DAO.NoteMapper">
 
-<select id="getNotebyId" parameterType="NoteBean" resultType="NoteBean">
-select * from fundoonote where notes_id=#{notes_id}
-</select>
+	<!-- <resultMap type="NoteBean" id="Note"> <id property="notes_id" column="notes_id"/> 
+		<result property="title" column="title"/> <result property="description" 
+		column="description"/> <result property="user" column="user_id"/> <result 
+		property="lastaccessdate" column="lastaccessdate"/> </resultMap> -->
 
-<select id="selectAllNotes" parameterType="NoteBean" resultType="NoteBean">
-select * from fundoonote where user_id=#{user.user_id}
-</select>
+	<resultMap type="NoteBean" id="NoteMap">
+		<id property="notes_id" column="notes_id" />
+		<result property="title" column="title" />
+		<result property="description" column="description" />
+		<result property="lastaccessdate" column="lastaccessdate" />
+		<result property="archive" column="archive" />
+		<result property="trash" column="trash" />
+		<result property="deletefromtrash" column="deletefromtrash" />
+		<result property="Remainder" column="Remainder" />
+		<association property="user" column="user_id" javaType="RegisterBean" select="selectUserFromNote">
+			<id property="user_id" column="user_id" />
+			
+		</association>
 
-<update id="archiveNote" parameterType="NoteBean">
-update fundoonote set archive=#{archive} where user_id=#{user.user_id} and notes_id=#{notes_id}
-</update>
+	</resultMap>
 
-<update id="trashNote" parameterType="NoteBean">
-update fundoonote set trash=#{trash} where user_id=#{user.user_id} and notes_id=#{notes_id}
-</update>
+	<insert id="insertNote" parameterType="NoteBean"
+		useGeneratedKeys="true">
+		insert into fundoonote(title,description,user_id,lastaccessdate)
+		values(#{title},#{description},#{user.user_id},#{lastaccessdate})
+	</insert>
 
-<update id="setRemainder" parameterType="NoteBean">
-update fundoonote set remainder=#{remainder} where user_id=#{user.user_id} and notes_id=#{notes_id}
-</update>
- </mapper> 
+	<update id="updateNote" parameterType="NoteBean">
+		update fundoonote set title=#{title},description=#{description} where
+		notes_id=#{notes_id}
+	</update>
+
+	<delete id="deleteNote" parameterType="NoteBean">
+		delete from fundoonote where notes_id=#{notes_id} and
+		user_id=#{user.user_id}
+	</delete>
+
+	<select id="getNotebyId" parameterType="NoteBean" resultType="NoteBean">
+		select * from fundoonote where notes_id=#{notes_id}
+	</select>
+
+	<select id="selectAllNotes" parameterType="NoteBean" resultMap="NoteMap">
+		select * from fundoonote where user_id=#{user.user_id}
+	</select>
+
+	<select id="selectUserFromNote" parameterType="NoteBean" resultType="RegisterBean">
+		select * from fundoouser where user_id=#{user.user_id}
+	</select>
+
+
+	<!-- <select id="selectAllNotesTest" parameterType="NoteBean" resultMap="Note"> 
+		select * from fundoonote inner join fundoouser on user_id=#{fundoonote.user_id} 
+		</select> -->
+
+	<update id="archiveNote" parameterType="NoteBean">
+		update fundoonote set archive=#{archive} where user_id=#{user.user_id} and
+		notes_id=#{notes_id}
+	</update>
+
+	<update id="trashNote" parameterType="NoteBean">
+		update fundoonote set trash=#{trash} where user_id=#{user.user_id} and
+		notes_id=#{notes_id}
+	</update>
+
+	<update id="setRemainder" parameterType="NoteBean">
+		update fundoonote set remainder=#{remainder} where user_id=#{user.user_id}
+		and notes_id=#{notes_id}
+	</update>
+</mapper> 
