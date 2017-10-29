@@ -3,16 +3,15 @@ package com.bridgeit.ElasticSearch;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Iterator;
-import java.util.List;import org.apache.activemq.broker.region.policy.QueryBasedSubscriptionRecoveryPolicy;
+
+import java.util.List;
 import org.apache.log4j.Logger;
-import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.stereotype.Service;
@@ -31,8 +30,7 @@ public class ElasticSearch {
 	static Logger logger = Logger.getLogger(ElasticSearch.class);
 	SearchResponse response;
 	TransportClient client;
-	int i=0;
-	
+	int i = 0;
 
 	public static void main(String args[]) throws IOException {
 		TransportClient client = null;
@@ -64,44 +62,66 @@ public class ElasticSearch {
 
 	}
 
-	public void getAllNotes(List<Note> notes) {
-		
+	public void indexAllNotes(List<Note> notes) {
+		System.out.println("Indexing..");
 		try {
-			 client = new PreBuiltTransportClient(Settings.EMPTY)
+			client = new PreBuiltTransportClient(Settings.EMPTY)
 					.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("localhost"), 9300));
 		} catch (UnknownHostException e) {
 
 			e.printStackTrace();
 		}
-		
-		
-		
-		for(Note notesitr:notes)
-		{
-			logger.info(notesitr);
-			client.prepareIndex("fundoonote", "fundoouser").setSource("content",notesitr).execute().actionGet();
-			
+
+		for (Note note : notes) {
+			logger.info(note);
+
+			XContentBuilder builder;
+			try {
+
+				builder = jsonBuilder().startObject().field("userid", note.getUser().getUser_id())
+						.field("title", note.getTitle()).field("description", note.getDescription()).endObject();
+				String json = builder.string();
+				client.prepareIndex("fundoo", "notes").setSource(json).execute().actionGet();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 		}
-		/*Iterator<Note> itr = notes.iterator();
-		while (itr.hasNext()) {
-			
-			client.prepareIndex("fundoonote", "fundoouser",).		
-		}*/
-		
-		
+
 		logger.info("In ElasticSearch" + notes);
 		logger.info("In ElasticSearch Getting notes ");
 	}
-	
-	public void searchElasticNotes(String searchString)
-	{
+
+	public void searchElasticNotes(String searchString, int userid) {
+		TransportClient client = null;
+		System.out.println("UID..."+userid);
+		try {
+
+			client = new PreBuiltTransportClient(Settings.EMPTY)
+					.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("localhost"), 9300));
+
+			SearchResponse response = client.prepareSearch("fundoo").setTypes("notes")
+					.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+					.setQuery(QueryBuilders.matchQuery("userid", userid))
+					/*.setQuery(QueryBuilders.matchQuery("description", searchString))*/
+					.setQuery(QueryBuilders.matchQuery("title", searchString))
+					.get();
+
+			System.out.println(response.toString());
+		} catch (UnknownHostException e) {
+
+			e.printStackTrace();
+		}
+
 		logger.info("Search UnderProcess");
+		
+		/*
 		logger.info(searchString);
-		response=client.prepareSearch("fundoonote").setTypes("fundoouser")
-				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
-				.setQuery(QueryBuilders.matchQuery("content", searchString))
-				.get();
+		response = client.prepareSearch("fundoonote").setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+				.setQuery(QueryBuilders.matchQuery("content", searchString)).get();
 		logger.info(response.toString());
+		*/
 		logger.info("Search Performed");
 	}
 }

@@ -11,6 +11,8 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -22,7 +24,7 @@ public class TestLoginController {
 	static Login user2;
 	static Login user3, user4;
 	static Register reg1, reg2, reg3, reg4, reg5;
-	static Note note1, note2, note3, note4, note5;
+	static Note note1, note2, note3, note4, note5, note6;
 	Logger logger = Logger.getLogger(TestRegisterController.class);
 
 	@BeforeClass
@@ -33,8 +35,8 @@ public class TestLoginController {
 		RestAssured.basePath = "/FundooNote";
 
 		user1 = new Login();
-		user1.setEmail("bvsaniketh95@gmail.com");
-		user1.setPassword("bridgeit");
+		user1.setEmail("satya@gmail.com");
+		user1.setPassword("satya");
 
 		user2 = new Login();
 		user2.setEmail("bmsbharathi@gmail.com");
@@ -45,8 +47,8 @@ public class TestLoginController {
 		user3.setPassword("suarez");
 
 		user4 = new Login();
-		user4.setEmail("satya@gmail.com");
-		user4.setPassword("satya");
+		user4.setEmail("ft@gmail.com");
+		user4.setPassword("ft");
 
 		note1 = new Note();
 		reg1 = new Register();
@@ -84,9 +86,9 @@ public class TestLoginController {
 		reg4.setUser_id(1);
 		note5.setUser(reg4);
 
-		Note note6 = new Note();
+		note6 = new Note();
 		reg4 = new Register();
-		reg4.setUser_id(1);
+		reg4.setUser_id(8);
 		note6.setUser(reg4);
 	}
 
@@ -107,7 +109,7 @@ public class TestLoginController {
 		// String jsonString =user1.toJSONString;
 		String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMjM0NSIsImlhdCI6MTUwODkwNDYxNiwic3ViIjoiSldUIFRva2VuIiwiaXNzIjoiQW5pa2V0aCdzIFRva2VucyIsIk5hbWUiOiJMdWlzIFN1YXJleiIsIk1vYmlsZSI6NDcyMzQyLCJJZCI6NCwiZXhwIjoxNTA4OTA4NjE2fQ.uYFTQcTIWOiTM1pQCX4A_3dAh_ofAQjXc6jHsOgZhsQ";
 		System.out.println("testRegister user exists");
-		Response resp = given().contentType("application/json").header("token", token).body(user3).when()
+		Response resp = given().contentType("application/json").header("token", token).body(user4).when()
 				.post("auth/insertNote");
 		logger.info(resp.asString());
 		resp.then().statusCode(200);
@@ -186,16 +188,30 @@ public class TestLoginController {
 	}
 
 	@Test
-	/* @Ignore */
+	
 	public void testFilter7() {
-		// String jsonString =user1.toJSONString;
-		String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMjM0NSIsImlhdCI6MTUwOTE3Njk5NSwic3ViIjoiSldUIFRva2VuIiwiaXNzIjoiQW5pa2V0aCdzIFRva2VucyIsIk5hbWUiOiJBbmlrZXRoIEJvbmRhZGEiLCJNb2JpbGUiOjEyMzQ1LCJJZCI6MSwiZXhwIjoxNTA5MTgwOTk1fQ.up1lGput05CBVQ9heBeb7kzRadmQSEzlQHW50sfPKTw";
-		String content = "12345";
+
+		String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMjM0NSIsImlhdCI6MTUwOTI1NjczOCwic3ViIjoiSldUIFRva2VuIiwiaXNzIjoiQW5pa2V0aCdzIFRva2VucyIsIk5hbWUiOiJTYXR5ZW5kcmEiLCJNb2JpbGUiOjk4Mzc4OCwiSWQiOjgsImV4cCI6MTUwOTI2MDczOH0.7CCBHwDCsLHi36aeLfXYabDV0DG8sBTOFjCoO7YX7hE";
+		String content = "cricket";
 		System.out.println("Testing Elastic Notes Search Functionalities");
-		/* Response resp = */
-		given().contentType("application/json").header("token", token).body(note5).body(content).when()
-				.post("auth/serchAllNotesElastic").then().statusCode(200);
-		/* logger.info(resp.asString()); */
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("userid", 8);
+		map.put("searchString", content);
+
+		given().contentType(ContentType.JSON).header("token", token).body(map).when().post("auth/serchAllNotesElastic")
+				.then().statusCode(200);
+
+	}
+
+	@Test
+	@Ignore
+	public void testFilter8() {
+
+		String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMjM0NSIsImlhdCI6MTUwOTE5OTIwMSwic3ViIjoiSldUIFRva2VuIiwiaXNzIjoiQW5pa2V0aCdzIFRva2VucyIsIk5hbWUiOiJTYXR5ZW5kcmEiLCJNb2JpbGUiOjk4Mzc4OCwiSWQiOjgsImV4cCI6MTUwOTIwMzIwMX0.0x9nMbZTmhlFZs0o4M96q4EAqi1i_oypAZutnpd3gpI";
+		System.out.println("Indexing all Notes");
+
+		given().contentType(ContentType.JSON).header("token", token).body(note6).when().post("auth/indexAllNotes")
+				.then().statusCode(200);
 
 	}
 

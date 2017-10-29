@@ -30,7 +30,7 @@ public class TokenAuth implements Filter {
 
     public void init(FilterConfig fConfig) throws ServletException {
     	
-    	System.out.println("Hello Filter" + "dgsdgs");
+    	System.out.println("Filter..");
 		
 	}
 
@@ -60,7 +60,7 @@ public class TokenAuth implements Filter {
 			{
 				System.out.println("Yes Inside Filter Pre Processing");
 				chain.doFilter(request, response);
-				System.out.println("Okay out of bounds I guess");
+				System.out.println("Filtering Done..");
 			}
 		}
 		

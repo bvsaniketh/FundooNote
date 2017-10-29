@@ -1,6 +1,5 @@
 /home/bridgeit/eclipse-workspace1/FundooNote/src/main/java/com/bridgeit/Controller/FundooRegisterController.java
 /home/bridgeit/eclipse-workspace1/FundooNote/src/main/java/com/bridgeit/DAO/NoteMapper.java
-/home/bridgeit/eclipse-workspace1/FundooNote/src/main/java/com/bridgeit/ElasticSearch/NoteRepository.java
 /home/bridgeit/eclipse-workspace1/FundooNote/src/main/java/com/bridgeit/DAO/UserMapper.java
 /home/bridgeit/eclipse-workspace1/FundooNote/src/main/java/com/bridgeit/JMS/SpringJmsProducer.java
 /home/bridgeit/eclipse-workspace1/FundooNote/src/main/java/com/bridgeit/DAO/UserMapperImpl.java
@@ -9,6 +8,7 @@
 /home/bridgeit/eclipse-workspace1/FundooNote/src/main/java/com/bridgeit/Validators/FormValidator.java
 /home/bridgeit/eclipse-workspace1/FundooNote/src/main/java/com/bridgeit/Model/GoogleProfile.java
 /home/bridgeit/eclipse-workspace1/FundooNote/src/main/java/com/bridgeit/Controller/FundooLoginController.java
+/home/bridgeit/eclipse-workspace1/FundooNote/src/main/java/com/bridgeit/Model/NoteTest.java
 /home/bridgeit/eclipse-workspace1/FundooNote/src/main/java/com/bridgeit/Model/Register.java
 /home/bridgeit/eclipse-workspace1/FundooNote/src/main/java/com/bridgeit/Services/NoteService.java
 /home/bridgeit/eclipse-workspace1/FundooNote/src/main/java/com/bridgeit/ElasticSearch/ElasticSearch.java

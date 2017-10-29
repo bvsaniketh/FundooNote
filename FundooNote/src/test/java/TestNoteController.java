@@ -27,7 +27,7 @@ public class TestNoteController {
 	{
 		RestAssured.baseURI="http://localhost";
 		RestAssured.port=8080;
-		RestAssured.basePath="/FundooNote";
+		RestAssured.basePath="/FundooNote"; 
 		
 		note1=new Note();
 		user1=new Register();
@@ -170,7 +170,7 @@ public class TestNoteController {
 	@Ignore
 	public void deletefromtrash()
 	{
-		given().contentType(ContentType.JSON).body(note7).when().post("deleteFromTrash").then().statusCode(200);
+		given().contentType(ContentType.JSON).body(note7).when().post("deleteFromTrash").then().statusCode(200); 
 	}
 	
 	@Test
