@@ -3,8 +3,8 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.bridgeit.JSON.Response;
-import com.bridgeit.Model.Register;
+import com.bridgeit.json.Response;
+import com.bridgeit.model.Register;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
@@ -52,12 +52,12 @@ public class TestRegisterController {
 		user3.setPassword("ft");
 
 		user4 = new Register();
-		user4.setName("Jurgen Klopp");
-		user4.setEmail("jk@gmail.com");
+		user4.setName("Sadio Mane");
+		user4.setEmail("sm@gmail.com");
 		//user2.setAge(25);
-		user4.setMobile(34234);
+		user4.setMobile(12123);
 		//user2.setUsername("luis");
-		user4.setPassword("jk");
+		user4.setPassword("sm");
 		
 		user5 = new Register();
 		user5.setName("Anibo1");
@@ -81,7 +81,7 @@ public class TestRegisterController {
 	@Ignore
 	public void insertUserWithoutAnyError() {
 		logger.info("insertUserWithoutAnyError()");
-		given().contentType("application/json").body(user5).when().post("fundooregister").then().statusCode(200);
+		given().contentType("application/json").body(user4).when().post("fundooregister").then().statusCode(200);
 		// assertThat(resp.getStatus(),equalTo(1));
 	}
 	

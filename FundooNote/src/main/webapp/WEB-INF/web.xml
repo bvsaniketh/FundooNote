@@ -10,7 +10,7 @@
     	</description>
     	<display-name>TokenAuth</display-name>
     	<filter-name>TokenAuth</filter-name>
-    	<filter-class>com.bridgeit.Filter.TokenAuth</filter-class>
+    	<filter-class>com.bridgeit.filter.TokenAuth</filter-class>
     </filter>
     <filter-mapping>
     	<filter-name>TokenAuth</filter-name>

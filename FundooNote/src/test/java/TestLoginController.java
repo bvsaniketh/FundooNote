@@ -3,9 +3,9 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.bridgeit.Model.Login;
-import com.bridgeit.Model.Note;
-import com.bridgeit.Model.Register;
+import com.bridgeit.model.Login;
+import com.bridgeit.model.Note;
+import com.bridgeit.model.Register;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
@@ -20,9 +20,7 @@ import io.restassured.response.Response;
 
 public class TestLoginController {
 
-	static Login user1;
-	static Login user2;
-	static Login user3, user4;
+	static Login user1,user2,user3,user4,user5;
 	static Register reg1, reg2, reg3, reg4, reg5;
 	static Note note1, note2, note3, note4, note5, note6;
 	Logger logger = Logger.getLogger(TestRegisterController.class);
@@ -50,6 +48,10 @@ public class TestLoginController {
 		user4.setEmail("ft@gmail.com");
 		user4.setPassword("ft");
 
+		user5 = new Login();
+		user5.setEmail("bvsaniketh95@gmail.com");
+		user5.setPassword("bridgeit");
+		
 		note1 = new Note();
 		reg1 = new Register();
 		reg1.setUser_id(5);
@@ -88,7 +90,7 @@ public class TestLoginController {
 
 		note6 = new Note();
 		reg4 = new Register();
-		reg4.setUser_id(8);
+		reg4.setUser_id(1);
 		note6.setUser(reg4);
 	}
 
@@ -98,7 +100,7 @@ public class TestLoginController {
 		// String jsonString =user1.toJSONString;
 
 		System.out.println("testRegister user exists");
-		Response resp = given().contentType("application/json").body(user1).when().post("fundoologin");
+		Response resp = given().contentType("application/json").body(user5).when().post("fundoologin");
 		logger.info(resp.asString());
 		resp.then().statusCode(200);
 	}
@@ -191,7 +193,7 @@ public class TestLoginController {
 	
 	public void testFilter7() {
 
-		String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMjM0NSIsImlhdCI6MTUwOTI1NjczOCwic3ViIjoiSldUIFRva2VuIiwiaXNzIjoiQW5pa2V0aCdzIFRva2VucyIsIk5hbWUiOiJTYXR5ZW5kcmEiLCJNb2JpbGUiOjk4Mzc4OCwiSWQiOjgsImV4cCI6MTUwOTI2MDczOH0.7CCBHwDCsLHi36aeLfXYabDV0DG8sBTOFjCoO7YX7hE";
+		String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMjM0NSIsImlhdCI6MTUwOTI2MTEyOCwic3ViIjoiSldUIFRva2VuIiwiaXNzIjoiQW5pa2V0aCdzIFRva2VucyIsIk5hbWUiOiJTYXR5ZW5kcmEiLCJNb2JpbGUiOjk4Mzc4OCwiSWQiOjgsImV4cCI6MTUwOTMwMTEyOH0.gvZAMmCEWG0yTrGMiFBYdULZCgwXxxI5Hz2r-9hsxj0";
 		String content = "cricket";
 		System.out.println("Testing Elastic Notes Search Functionalities");
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -207,7 +209,7 @@ public class TestLoginController {
 	@Ignore
 	public void testFilter8() {
 
-		String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMjM0NSIsImlhdCI6MTUwOTE5OTIwMSwic3ViIjoiSldUIFRva2VuIiwiaXNzIjoiQW5pa2V0aCdzIFRva2VucyIsIk5hbWUiOiJTYXR5ZW5kcmEiLCJNb2JpbGUiOjk4Mzc4OCwiSWQiOjgsImV4cCI6MTUwOTIwMzIwMX0.0x9nMbZTmhlFZs0o4M96q4EAqi1i_oypAZutnpd3gpI";
+		String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMjM0NSIsImlhdCI6MTUwOTI2MzA5NCwic3ViIjoiSldUIFRva2VuIiwiaXNzIjoiQW5pa2V0aCdzIFRva2VucyIsIk5hbWUiOiJBbmlrZXRoIEJvbmRhZGEiLCJNb2JpbGUiOjEyMzQ1LCJJZCI6MSwiZXhwIjoxNTA5MzAzMDk0fQ.MN67MNm33mwCG2yEyHgOBRSOG7OtTb3CXXsQRmrrSEo";
 		System.out.println("Indexing all Notes");
 
 		given().contentType(ContentType.JSON).header("token", token).body(note6).when().post("auth/indexAllNotes")

@@ -38,8 +38,8 @@
 <!-- <bean id="service" class="com.bridgeit.Services.UserService">
 </bean>  -->
 
-<bean id="mapperimpl" class="com.bridgeit.DAO.UserMapperImpl"></bean>
-<bean id="formvalid"  class="com.bridgeit.Validators.FormValidator"></bean>
+<bean id="mapperimpl" class="com.bridgeit.dao.UserMapperImpl"></bean>
+<bean id="formvalid"  class="com.bridgeit.validators.FormValidator"></bean>
 
 <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
         <property name="corePoolSize" value="5" />
@@ -64,12 +64,12 @@
 <property name="receiveTimeout" value="10000"></property>
 </bean>
 
-<bean id="springJmsProducer" class="com.bridgeit.JMS.SpringJmsProducer">
+<bean id="springJmsProducer" class="com.bridgeit.jms.SpringJmsProducer">
 <property name="destination" ref="messageDestination"></property>
 <property name="jmsTemplate" ref="jmsTemplate"></property>
 </bean>
 
-<bean id="springJmsConsumer" class="com.bridgeit.JMS.SpringJmsConsumer">
+<bean id="springJmsConsumer" class="com.bridgeit.jms.SpringJmsConsumer">
 <property name="destination" ref="messageDestination"></property>
 <property name="jmsTemplate" ref="jmsTemplate"></property>
 </bean>

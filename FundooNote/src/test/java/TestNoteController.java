@@ -5,8 +5,8 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.bridgeit.Model.Note;
-import com.bridgeit.Model.Register;
+import com.bridgeit.model.Note;
+import com.bridgeit.model.Register;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;

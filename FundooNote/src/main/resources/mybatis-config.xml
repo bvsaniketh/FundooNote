@@ -5,9 +5,9 @@
  <configuration>
  <properties resource="jdbc.properties"/>
  <typeAliases>
- <typeAlias type="com.bridgeit.Model.Login" alias="LoginBean"></typeAlias>
- <typeAlias type="com.bridgeit.Model.Register" alias="RegisterBean"></typeAlias>
- <typeAlias type="com.bridgeit.Model.Note" alias="NoteBean"></typeAlias>
+ <typeAlias type="com.bridgeit.model.Login" alias="LoginBean"></typeAlias>
+ <typeAlias type="com.bridgeit.model.Register" alias="RegisterBean"></typeAlias>
+ <typeAlias type="com.bridgeit.model.Note" alias="NoteBean"></typeAlias>
  </typeAliases>
  <environments default="development">
  <environment id="development">
