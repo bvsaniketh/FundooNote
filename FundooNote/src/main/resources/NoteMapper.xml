@@ -51,7 +51,10 @@
 	<select id="selectUserFromNote" parameterType="NoteBean" resultType="RegisterBean">
 		select * from fundoouser where user_id=#{user.user_id}
 	</select>
-
+	
+	<select id="selectAllFundooNotes" resultMap="NoteMap">
+	select * from fundoonote;
+	</select>
 
 	<!-- <select id="selectAllNotesTest" parameterType="NoteBean" resultMap="Note"> 
 		select * from fundoonote inner join fundoouser on user_id=#{fundoonote.user_id} 

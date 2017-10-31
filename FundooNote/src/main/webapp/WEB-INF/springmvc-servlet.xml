@@ -2,6 +2,8 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:elasticsearch="http://www.springframework.org/schema/data/elasticsearch"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
     http://www.springframework.org/schema/mvc
@@ -9,37 +11,34 @@
     http://www.springframework.org/schema/context
     http://www.springframework.org/schema/context/spring-context-3.0.xsd
     http://www.springframework.org/schema/data/elasticsearch 
-    http://www.springframework.org/schema/data/elasticsearch/spring-elasticsearch-1.0.xsd"
-    xmlns:task="http://www.springframework.org/schema/task
+    http://www.springframework.org/schema/data/elasticsearch/spring-elasticsearch-1.0.xsd
 	http://www.springframework.org/schema/task
-	http://www.springframework.org/schema/task/spring-task-3.0.xsd"
-	xmlns:elasticsearch="http://www.springframework.org/schema/data/elasticsearch">
+	http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 	
      
 <context:component-scan base-package="com.bridgeit"/>
 <context:annotation-config/>
 
-<mvc:annotation-driven />
+<mvc:annotation-driven/>
+
+<task:annotation-driven/>
 
 
-<!-- <elasticsearch:repositories base-package="com.bridgeit"/>
-
-<elasticsearch:node-client id="client" local="true"/>
-
-<bean id="template" class="org.springframework.data.elasticsearch.core.ElasticsearchTemplate">
-<constructor-arg name="client" ref="client"/>
-</bean> -->
 
 <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 <property name="prefix" value="/WEB-INF/"/>
 <property name="suffix" value=".jsp"/>
 </bean>
 
-<!-- <bean id="service" class="com.bridgeit.Services.UserService">
+<!-- <bean id="service" class="com.bridgeit.utilityservices.UserService">
 </bean>  -->
 
 <bean id="mapperimpl" class="com.bridgeit.dao.UserMapperImpl"></bean>
 <bean id="formvalid"  class="com.bridgeit.validators.FormValidator"></bean>
+
+<bean id="jmsconsumerelasticsearch" class="com.bridgeit.utilityservices.JMSConsumerElasticSearch" 
+		init-method="init" destroy-method="stop">
+</bean>
 
 <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
         <property name="corePoolSize" value="5" />
@@ -47,7 +46,19 @@
         <property name="queueCapacity" value="25" />
 		</bean>
 
-
+<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+<property name="host" value="smtp.gmail.com"/>
+<property name="port" value="587"/>
+<property name="username" value="bondadavenkatasai.aniketh2013@vit.ac.in"/>
+<property name="password" value="gilchrist319"/>
+<property name="javaMailProperties">
+	<props>
+		<prop key="mail.transport.protocol">smtp</prop>
+		<prop key="mail.smtp.auth">true</prop>
+		<prop key="mail.smtp.starttls.enable">true</prop>
+	</props>
+</property>
+</bean>
 
 
 
@@ -72,6 +83,10 @@
 <bean id="springJmsConsumer" class="com.bridgeit.jms.SpringJmsConsumer">
 <property name="destination" ref="messageDestination"></property>
 <property name="jmsTemplate" ref="jmsTemplate"></property>
+</bean>
+
+
+<bean id="jmsElasticSearch" class="com.bridgeit.utilityservices.JMSProducerElasticSearch">
 </bean>
 
 </beans>

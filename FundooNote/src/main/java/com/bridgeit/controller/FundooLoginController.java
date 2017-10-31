@@ -19,75 +19,56 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bridgeit.businessservices.LoginService;
 import com.bridgeit.json.Response;
 import com.bridgeit.json.TokenGeneration;
 import com.bridgeit.model.Login;
 import com.bridgeit.model.Register;
-import com.bridgeit.services.GoogleLogin;
-import com.bridgeit.services.JWT;
-import com.bridgeit.services.RedisService;
-import com.bridgeit.services.UserService;
+import com.bridgeit.utilityservices.GoogleLogin;
+import com.bridgeit.utilityservices.JWT;
+import com.bridgeit.utilityservices.RedisService;
+import com.bridgeit.utilityservices.UserService;
 
 @Controller
 public class FundooLoginController {
 	@Autowired
 	UserService service;
+	
 	@Autowired
-	RedisService redisservice;
+	RedisService redisService;
+	
+	@Autowired
+	LoginService loginService;
 
 	Logger logger = Logger.getLogger(FundooLoginController.class);
 	
+	HttpHeaders headers = new HttpHeaders();
+	
 	/*
-	 * String CLIENT_ID="12345"; final static String
-	 * CLIENT_SECRET="abcdefghijklmnopqrstuvwxyz";
-	 *
-	 * 
-	 * Controller from JUnit to test.
+	 * Controller from JUnit to test the Valid Login.
 	 */
 
 	@RequestMapping(value = "fundoologin", method = RequestMethod.POST)
-	public @ResponseBody ResponseEntity<TokenGeneration> loginuser(@RequestBody Login user1) {
-		System.out.println(user1);
-		System.out.println("ashdbabd");
-		Register reg = service.getUser(user1);
-		logger.info(reg);
-		TokenGeneration tokenobject = new TokenGeneration();
-		if (reg != null) {
-			/* Validating User Credentials */
-			tokenobject.setUserstatus("Valid User");
-			logger.info("Login Successfull");
+	public @ResponseBody ResponseEntity<TokenGeneration> loginuser(@RequestBody Login user) {
+		logger.info(user);
+		logger.info("In Fundoo Login");
 
-			/* Token Generation */
+		TokenGeneration tokenobject = loginService.loginService(user);
 
-			String token = JWT.getToken(reg);
-			logger.info(token);
-
-			/* Sending to Redis */
-			logger.info("After sending to redis");
-			logger.info(reg.getUser_id());
-			redisservice.sendtokenredis(reg.getUser_id(), token);
-
-			/* Fetching from Redis */
-			logger.info("After fetching the value from Redis");
-			String redistoken = redisservice.gettokenfromredis(reg.getUser_id());
-			logger.info("Redis Final generation" + redistoken);
-			tokenobject.setToken(token);
-
-			/* Setting Headers */
-			HttpHeaders headers = new HttpHeaders();
-			headers.add("token", token);
+		if (tokenobject != null) {
+			logger.info(tokenobject.getToken());
+			headers.add("token", tokenobject.getToken());
 			logger.info(headers.toString());
-
-			/* Checking Decoding the token and fetching the id */
-			int id = JWT.verifyToken(token);
-			logger.info(id);
+			
 
 			return new ResponseEntity<TokenGeneration>(tokenobject, headers, HttpStatus.OK);
 		}
+		
 		return new ResponseEntity<TokenGeneration>(tokenobject, HttpStatus.BAD_REQUEST);
-
 	}
 
+	
+	
 	@RequestMapping(value = "log", method = RequestMethod.POST)
 	public void lo() {
 		System.out.println("Hellooo");
@@ -156,9 +137,9 @@ public class FundooLoginController {
 			logger.info(token);
 			System.out.println(token);
 			logger.info("After sending to redis");
-			redisservice.sendtokenredis(reg.getUser_id(), token);
+			redisService.sendtokenredis(reg.getUser_id(), token);
 			logger.info("After fetching the value from Redis");
-			redisservice.gettokenfromredis(reg.getUser_id());
+			redisService.gettokenfromredis(reg.getUser_id());
 		} else {
 			mav = new ModelAndView("login", "message", "Invalid Login");
 		}
@@ -166,29 +147,7 @@ public class FundooLoginController {
 		return mav;
 	}
 
-	/*
-	 * @RequestMapping(value="login",method=RequestMethod.POST)
-	 * 
-	 * @ResponseBody public ResponseEntity<Response> loginuser1(@RequestBody Login
-	 * user1) {
-	 * 
-	 * //System.out.println(loginuser.getEmail()); //ModelAndView mav=new
-	 * ModelAndView("welcomelogin","Login",loginuser); Register
-	 * reg=service.getUser(user1); //ModelAndView mav=null; Response resp=null;
-	 * if(reg!=null) { // session=request.getSession(true);
-	 * //session.setAttribute("session",loginuser); //System.out.println(session);
-	 * System.out.println(reg.getName() +" "+reg.getPassword()+ reg.getUser_id());
-	 * String token=JWT.getToken(CLIENT_SECRET); logger.info(token);
-	 * System.out.println(token); logger.info("After sending to redis");
-	 * redisservice.sendtokenredis(CLIENT_ID, token);
-	 * logger.info("After fetching the value from Redis");
-	 * redisservice.gettokenfromredis(CLIENT_ID); //mav=new
-	 * ModelAndView("welcomelogin","logins",reg); } else { //mav=new
-	 * ModelAndView("login","message","Invalid Login");
-	 * System.out.println("Invalid Login"); }
-	 * 
-	 * return new ResponseEntity<Response>(resp,HttpStatus.OK); }
-	 */
+
 	@RequestMapping(value = "logout")
 	public ModelAndView logout(HttpServletRequest request, HttpSession session) {
 		ModelAndView mv = new ModelAndView("login");

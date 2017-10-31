@@ -90,11 +90,12 @@ public class NoteMapperImpl{
 	
 	{
 	session=MyBatisUtil.getSqlSessionFactory().openSession();
+	List<Note>notes;
 	
 		try
 		{
 			NoteMapper notemapper=session.getMapper(NoteMapper.class);
-			List<Note>notes =notemapper.selectAllNotes(note);
+			notes =notemapper.selectAllNotes(note);
 			session.commit();
 			logger.info(notes);
 			return notes;
@@ -163,6 +164,25 @@ public class NoteMapperImpl{
 			session.close();
 		}
 		
+	}
+
+	public List<Note> selectAllFundooNotes() 
+	
+	{
+		session=MyBatisUtil.getSqlSessionFactory().openSession();
+		List<Note> notes;
+		try
+		{
+		NoteMapper notemapper=session.getMapper(NoteMapper.class);
+		notes=notemapper.selectAllFundooNotes();
+		session.commit();
+		logger.info("Fetched all the notes from database");
+		}
+		finally
+		{
+			session.close();
+		}
+		return notes;
 	}
 	
 

@@ -15,11 +15,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bridgeit.elasticsearch.ElasticSearch;
+import com.bridgeit.businessservices.NoteBusinessService;
+
 import com.bridgeit.json.Response;
 import com.bridgeit.model.Note;
 import com.bridgeit.model.Register;
-import com.bridgeit.services.NoteService;
+import com.bridgeit.utilityservices.ElasticSearch;
+import com.bridgeit.utilityservices.JMSProducerElasticSearch;
+import com.bridgeit.utilityservices.NoteService;
 
 @Controller
 @RequestMapping("auth/")
@@ -29,8 +32,13 @@ public class NoteController {
 	@Autowired
 	NoteService service;
 
+	@Autowired 
+	NoteBusinessService noteBusinessService;
 	@Autowired
-	ElasticSearch elasticsearch;
+	ElasticSearch elasticSearch;
+	
+	@Autowired
+	JMSProducerElasticSearch jmsElasticSearch;
 
 	Response resp = new Response();
 
@@ -38,19 +46,8 @@ public class NoteController {
 	@ResponseBody
 	public ResponseEntity<Response> insertNote(@RequestBody Note note1) {
 		logger.info("Before Inserting Note");
-		Note note = new Note();
-		Register user = new Register();
-		user.setUser_id(note1.getUser().getUser_id());
-		note.setTitle("BatMan");
-		note.setDescription("To breathe and is purest");
-		note.setLastaccessdate(new Date());
-		note.setUser(note1.getUser());
-
-		/*
-		 * logger.info(note1); service.insertNote(note1);
-		 */
-		logger.info(note);
-		service.insertNote(note);
+		logger.info(note1);
+		service.insertNote(note1);
 		logger.info("After Insertion of the Note");
 		return new ResponseEntity<Response>(resp, HttpStatus.OK);
 
@@ -60,15 +57,6 @@ public class NoteController {
 	@ResponseBody
 	public ResponseEntity<Response> updateNote(@RequestBody Note note2) {
 		logger.info("Before Update Note");
-		/*
-		 * Note note=new Note(); Register user=new Register(); user.setUser_id(2);
-		 */
-		/*
-		 * note2.setTitle("Goblet of Fire");
-		 * note2.setDescription("One of HarryPotter's Series"); note2.setNotes_id(17);
-		 */
-		// note.setUser(user);
-
 		service.updateNote(note2);
 		logger.info("After Update Note");
 		return new ResponseEntity<Response>(resp, HttpStatus.OK);
@@ -77,14 +65,13 @@ public class NoteController {
 	@RequestMapping(value = "deleteNote", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Response> deleteNote(@RequestBody Note note3) {
+		
 		logger.info("Before Delete Note");
-		/*
-		 * Note note=new Note(); note.setNotes_id(7); Register user=new Register();
-		 * user.setUser_id(2); note.setUser(user);
-		 */
-
 		service.deleteNode(note3);
 		logger.info("After deleting note");
+		logger.info("Deleting in Elastic Search");
+		elasticSearch.deleteElasticNotes(note3.getNotes_id());
+		logger.info("Deleted from Elastic Search");
 		return new ResponseEntity<Response>(resp, HttpStatus.OK);
 	}
 
@@ -92,11 +79,7 @@ public class NoteController {
 	@ResponseBody
 	public ResponseEntity<Response> getNotebyId(@RequestBody Note note4) {
 		logger.info("Before getNotebyId");
-		/*
-		 * Note note=new Note(); note.setNotes_id(8);
-		 */
 
-		logger.info("sfasfasfsadsadasdsadasdsa");
 		logger.info(note4);
 		note4 = service.getNotebyId(note4);
 		logger.info(note4);
@@ -110,13 +93,33 @@ public class NoteController {
 	public ResponseEntity<Response> indexNotes(@RequestBody Note note5) {
 		logger.info("Before selectAllNotes");
 
-		List<Note> notes = service.selectAllNotes(note5);
+		//List<Note> notes = service.selectAllNotes(note5);
+		List<Note> notes = service.selectAllFundooNotes();
 		logger.info("After selectAllNotes");
 		logger.info(notes);
-		elasticsearch.indexAllNotes(notes);
+/*		List<Note> notes = service.selectAllNotes(note5);
+		logger.info(notes);*/
+		jmsElasticSearch.sendNotesToJMS();
+		/*elasticSearch.indexAllNotes(notes);*/
 		return new ResponseEntity<Response>(resp, HttpStatus.OK);
 	}
 
+	@RequestMapping(value = "selectAllFundooNotes", method = RequestMethod.POST, consumes = "application/json")
+	@ResponseBody
+	public ResponseEntity<Response> selectAllFundooNotes(@RequestBody Note note5) {
+
+	
+		logger.info("Fetching All Notes");
+		List<Note> notes=service.selectAllFundooNotes();
+		logger.info(notes);
+		/*elasticSearch.indexAllNotes(notes);*/
+		/*elasticSearch.searchElasticNotes(searchString, userid);*/
+		logger.info("After Search Elastic All Notes");
+		return new ResponseEntity<Response>(resp, HttpStatus.OK);
+		
+	}
+
+	
 	@RequestMapping(value = "serchAllNotesElastic", method = RequestMethod.POST, consumes = "application/json")
 	@ResponseBody
 	public ResponseEntity<Response> selectAllNotesElastic(@RequestBody Map<String, Object> searchMap) {
@@ -126,8 +129,10 @@ public class NoteController {
 	
 		logger.info("Searching Elastic searcAllNotes");
 		logger.info(searchString);
-		elasticsearch.searchElasticNotes(searchString, userid);
+		elasticSearch.searchElasticNotes(searchString, userid);
 		logger.info("After Search Elastic All Notes");
+		
+		
 		return new ResponseEntity<Response>(resp, HttpStatus.OK);
 	}
 
@@ -156,17 +161,9 @@ public class NoteController {
 	@RequestMapping(value = "deleteFromTrash", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Response> deleteFromTrash(@RequestBody Note note) {
-
-		logger.info("Deleting Permanently the selected user node");
-		logger.info(note.isTrash() && note.isDeletefromtrash());
-		if (note.isTrash() && note.isDeletefromtrash()) {
-			service.deleteNode(note);
-			logger.info("Deleted the node permanently");
-			resp.setStatus(note.getUser().getUser_id());
-			resp.setMessage("Node deleted from trash");
-		} else {
-			logger.info("Not deleted");
-		}
+		
+		Response resp=noteBusinessService.trashService(note);
+		logger.info(resp);
 		return new ResponseEntity<Response>(resp, HttpStatus.OK);
 	}
 

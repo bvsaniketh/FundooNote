@@ -90,7 +90,7 @@ public class TestLoginController {
 
 		note6 = new Note();
 		reg4 = new Register();
-		reg4.setUser_id(1);
+		reg4.setUser_id(2);
 		note6.setUser(reg4);
 	}
 
@@ -100,7 +100,7 @@ public class TestLoginController {
 		// String jsonString =user1.toJSONString;
 
 		System.out.println("testRegister user exists");
-		Response resp = given().contentType("application/json").body(user5).when().post("fundoologin");
+		Response resp = given().contentType("application/json").body(user2).when().post("fundoologin");
 		logger.info(resp.asString());
 		resp.then().statusCode(200);
 	}
@@ -181,23 +181,23 @@ public class TestLoginController {
 	@Ignore
 	public void testFilter6() {
 		// String jsonString =user1.toJSONString;
-		String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMjM0NSIsImlhdCI6MTUwOTE3MTkzOSwic3ViIjoiSldUIFRva2VuIiwiaXNzIjoiQW5pa2V0aCdzIFRva2VucyIsIk5hbWUiOiJBbmlrZXRoIEJvbmRhZGEiLCJNb2JpbGUiOjEyMzQ1LCJJZCI6MSwiZXhwIjoxNTA5MTc1OTM5fQ.6YnPuGXoJSMde8tA1JwI2dLvjV3uSYRpM7R0e594wig";
+		String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMjM0NSIsImlhdCI6MTUwOTQzMzU0Miwic3ViIjoiSldUIFRva2VuIiwiaXNzIjoiQW5pa2V0aCdzIFRva2VucyIsIk5hbWUiOiJCaGFyYXRoaSIsIk1vYmlsZSI6NzM3MywiSWQiOjIsImV4cCI6MTUwOTQ3MzU0Mn0.EbwVSKQllhhaxtBEx2CcRLWfVpQpTlc0Dl9zFlcsAW0";
 		System.out.println("Testing Elastic Notes Functionalities");
-		/* Response resp = */given().contentType("application/json").header("token", token).body(note5).when()
-				.post("auth/selectAllNotes").then().statusCode(200);
+		/* Response resp = */given().contentType("application/json").header("token", token).body(note6).when()
+				.post("auth/selectAllFundooNotes").then().statusCode(200);
 		/* logger.info(resp.asString()); */
 
 	}
 
 	@Test
-	
+	@Ignore
 	public void testFilter7() {
 
-		String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMjM0NSIsImlhdCI6MTUwOTI2MTEyOCwic3ViIjoiSldUIFRva2VuIiwiaXNzIjoiQW5pa2V0aCdzIFRva2VucyIsIk5hbWUiOiJTYXR5ZW5kcmEiLCJNb2JpbGUiOjk4Mzc4OCwiSWQiOjgsImV4cCI6MTUwOTMwMTEyOH0.gvZAMmCEWG0yTrGMiFBYdULZCgwXxxI5Hz2r-9hsxj0";
+		String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMjM0NSIsImlhdCI6MTUwOTM2MDMxNiwic3ViIjoiSldUIFRva2VuIiwiaXNzIjoiQW5pa2V0aCdzIFRva2VucyIsIk5hbWUiOiJGZXJuYW5kbyBUb3JyZXMiLCJNb2JpbGUiOjQ3MjM0MiwiSWQiOjUsImV4cCI6MTUwOTQwMDMxNn0.ZfJOiuK0tUml-RRTtvAwZpqTILzuPU_2c_x9Mo2iHsI";
 		String content = "cricket";
 		System.out.println("Testing Elastic Notes Search Functionalities");
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("userid", 8);
+		map.put("userid", 5);
 		map.put("searchString", content);
 
 		given().contentType(ContentType.JSON).header("token", token).body(map).when().post("auth/serchAllNotesElastic")
@@ -206,13 +206,26 @@ public class TestLoginController {
 	}
 
 	@Test
-	@Ignore
+    @Ignore
 	public void testFilter8() {
 
-		String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMjM0NSIsImlhdCI6MTUwOTI2MzA5NCwic3ViIjoiSldUIFRva2VuIiwiaXNzIjoiQW5pa2V0aCdzIFRva2VucyIsIk5hbWUiOiJBbmlrZXRoIEJvbmRhZGEiLCJNb2JpbGUiOjEyMzQ1LCJJZCI6MSwiZXhwIjoxNTA5MzAzMDk0fQ.MN67MNm33mwCG2yEyHgOBRSOG7OtTb3CXXsQRmrrSEo";
+		String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMjM0NSIsImlhdCI6MTUwOTQzMzU0Miwic3ViIjoiSldUIFRva2VuIiwiaXNzIjoiQW5pa2V0aCdzIFRva2VucyIsIk5hbWUiOiJCaGFyYXRoaSIsIk1vYmlsZSI6NzM3MywiSWQiOjIsImV4cCI6MTUwOTQ3MzU0Mn0.EbwVSKQllhhaxtBEx2CcRLWfVpQpTlc0Dl9zFlcsAW0";  
 		System.out.println("Indexing all Notes");
 
 		given().contentType(ContentType.JSON).header("token", token).body(note6).when().post("auth/indexAllNotes")
+				.then().statusCode(200);
+
+	}
+	
+	@Test
+	@Ignore
+	public void testFilter9() {
+		
+		note6.setNotes_id(2);
+		String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMjM0NSIsImlhdCI6MTUwOTM0NTA2OCwic3ViIjoiSldUIFRva2VuIiwiaXNzIjoiQW5pa2V0aCdzIFRva2VucyIsIk5hbWUiOiJGZXJuYW5kbyBUb3JyZXMiLCJNb2JpbGUiOjQ3MjM0MiwiSWQiOjUsImV4cCI6MTUwOTM4NTA2OH0.N9hobq6EZUY0Vzx6flQr_5RNu6U_zqyIlflcmAIrrPI";
+		System.out.println("Deleting Note");
+
+		given().contentType(ContentType.JSON).header("token", token).body(note6).when().post("auth/deleteNote")
 				.then().statusCode(200);
 
 	}

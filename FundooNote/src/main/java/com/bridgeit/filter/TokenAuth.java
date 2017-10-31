@@ -12,8 +12,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.bridgeit.services.JWT;
-import com.bridgeit.services.RedisService;
+import com.bridgeit.utilityservices.JWT;
+import com.bridgeit.utilityservices.RedisService;
 
 /**
  * Servlet Filter implementation class TokenAuth

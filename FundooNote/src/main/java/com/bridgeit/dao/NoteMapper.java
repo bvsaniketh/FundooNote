@@ -18,4 +18,5 @@ public interface NoteMapper {
 	public void trashNote(Note note);
 	/*public void deletePermNote(Note note);*/
 	public void setRemainder(Note note);
+	public List<Note> selectAllFundooNotes();
 }

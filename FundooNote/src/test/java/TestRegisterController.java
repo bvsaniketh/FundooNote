@@ -60,12 +60,12 @@ public class TestRegisterController {
 		user4.setPassword("sm");
 		
 		user5 = new Register();
-		user5.setName("Anibo1");
-		user5.setEmail("bvsaniketh@yahoo.co.in");
+		user5.setName("Dejan Lovren");
+		user5.setEmail("");
 		//user1.setAge(25);
-		user5.setMobile(472342);
+		user5.setMobile(4723142);
 		//user1.setUsername("subbu");
-		user5.setPassword("subbu");
+		user5.setPassword("dl");
 	}
 
 	@Test
@@ -73,7 +73,7 @@ public class TestRegisterController {
 	public void testRegister() {
 		// String jsonString =user1.toJSONString;
 		System.out.println("testRegister user exists");
-		Response resp=(Response) given().contentType("application/json").body(user5).when().post("fundooregister").then().statusCode(200);
+		Response resp=(Response) given().contentType("application/json").body(user3).when().post("fundooregister").then().statusCode(200);
 		System.out.println(resp);
 	}
 	
@@ -81,7 +81,7 @@ public class TestRegisterController {
 	@Ignore
 	public void insertUserWithoutAnyError() {
 		logger.info("insertUserWithoutAnyError()");
-		given().contentType("application/json").body(user4).when().post("fundooregister").then().statusCode(200);
+		given().contentType("application/json").body(user5).when().post("fundooregister").then().statusCode(200);
 		// assertThat(resp.getStatus(),equalTo(1));
 	}
 	
@@ -89,7 +89,7 @@ public class TestRegisterController {
 	@Ignore 
 	public void testInsertRegister() {
 	logger.info("insert user");
-	 RestAssured.given().body(user2).contentType("application/json").when().post("fundooregister").then().statusCode(200); }
+	 RestAssured.given().body(user5).contentType("application/json").when().post("fundooregister").then().statusCode(200); }
 	 
 
 }

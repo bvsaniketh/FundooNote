@@ -20,6 +20,7 @@
 /home/bridgeit/eclipse-workspace1/FundooNote/src/main/java/com/bridgeit/services/EmailScheduler.java
 /home/bridgeit/eclipse-workspace1/FundooNote/src/main/java/com/bridgeit/dao/NoteMapperImpl.java
 /home/bridgeit/eclipse-workspace1/FundooNote/src/main/java/com/bridgeit/dao/UserMapper.java
+/home/bridgeit/eclipse-workspace1/FundooNote/src/main/java/com/bridgeit/services/JMSProducerElasticSearch.java
 /home/bridgeit/eclipse-workspace1/FundooNote/src/main/java/com/bridgeit/mybatisutility/MyBatisUtil.java
 /home/bridgeit/eclipse-workspace1/FundooNote/src/main/java/com/bridgeit/elasticsearch/ElasticSearch.java
 /home/bridgeit/eclipse-workspace1/FundooNote/src/main/java/com/bridgeit/filter/TokenAuth.java

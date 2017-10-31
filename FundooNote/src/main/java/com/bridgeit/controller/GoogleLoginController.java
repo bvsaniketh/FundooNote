@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.bridgeit.model.GoogleProfile;
 import com.bridgeit.model.Register;
-import com.bridgeit.services.GoogleLoginByRest;
-import com.bridgeit.services.UserService;
+import com.bridgeit.utilityservices.GoogleLoginByRest;
+import com.bridgeit.utilityservices.UserService;
 
 @Controller
 public class GoogleLoginController 

@@ -86,8 +86,8 @@ public class TestNoteController {
 		/*Permanent deletion of the note*/
 		note8=new Note();
 		user8=new Register();
-		user8.setUser_id(5);
-		note8.setNotes_id(34);
+		user8.setUser_id(4);
+		note8.setNotes_id(21);
 		note8.setTrash(true);
 		note8.setDeletefromtrash(true);
 		note8.setUser(user7);
@@ -170,7 +170,7 @@ public class TestNoteController {
 	@Ignore
 	public void deletefromtrash()
 	{
-		given().contentType(ContentType.JSON).body(note7).when().post("deleteFromTrash").then().statusCode(200); 
+		given().contentType(ContentType.JSON).body(note8).when().post("deleteFromTrash").then().statusCode(200); 
 	}
 	
 	@Test

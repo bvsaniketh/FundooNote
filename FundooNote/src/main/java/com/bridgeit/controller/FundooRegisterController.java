@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -20,14 +21,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bridgeit.businessservices.RegisterService;
 import com.bridgeit.jms.SpringJmsConsumer;
 import com.bridgeit.jms.SpringJmsProducer;
 import com.bridgeit.json.Response;
 import com.bridgeit.model.Login;
 import com.bridgeit.model.Register;
-import com.bridgeit.services.Email;
-import com.bridgeit.services.EmailScheduler;
-import com.bridgeit.services.UserService;
+import com.bridgeit.utilityservices.Email;
+import com.bridgeit.utilityservices.EmailScheduler;
+import com.bridgeit.utilityservices.UserService;
 import com.bridgeit.validators.FormValidator;
 import com.google.gson.Gson;
 
@@ -41,6 +43,8 @@ public class FundooRegisterController {
 
 	@Autowired
 	Email email;
+	
+	
 	@Autowired
 	TaskExecutor taskExecutor;
 
@@ -48,6 +52,10 @@ public class FundooRegisterController {
 	SpringJmsProducer jms;
 	@Autowired
 	SpringJmsConsumer jms1;
+	
+	@Autowired
+	RegisterService regService;
+	
 	
 	private String OTP;
 	private String usernameupdation;
@@ -59,45 +67,19 @@ public class FundooRegisterController {
 
 	@RequestMapping(value = "fundooregister", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public @ResponseBody ResponseEntity<Response> insertUser(@RequestBody Register user, BindingResult bindResult) {
-		System.out.println("Entered insertUser()");
+		
 		logger.info("Entered insertUser()");
-		Response resp;
-		formvalid.validate(user, bindResult);
-		if (bindResult.hasErrors()) {
-			logger.info("has errors while validating");
-			logger.info(bindResult.getFieldErrors().toString());
-			resp = new Response();
-			resp.setStatus(-1);
-			resp.setMessage("Entered invalid details");
-			return new ResponseEntity<Response>(resp, HttpStatus.BAD_REQUEST); // Case for invalid details
-		}
-		if (service.checkUserByEmail(user.getEmail()) != null) {
-			logger.info("email already exists");
-			resp = new Response();
-			resp.setStatus(-1);
-			resp.setMessage("User already exist");
-			return new ResponseEntity<Response>(resp, HttpStatus.CONFLICT); // Case for duplication of user details
-		}
-
-		try {
-			service.insertuser(user);
-			logger.info("registered");
-			taskExecutor.execute(new EmailScheduler(user, email));
-			logger.info("Registered successfully");
-			resp = new Response();
-			resp.setStatus(1);
-			resp.setMessage("User registered successfully!!!");
-			String jsonStr = mapperObj.writeValueAsString(user);
-			System.out.println(jsonStr + " After converting to json from Java Object");
-
-			return new ResponseEntity<Response>(HttpStatus.OK); // Case for new user registration
-		} catch (Exception e) {
-			logger.info("EXCEPTION OCCURED");
-			resp = new Response();
-			resp.setStatus(-1);
-			resp.setMessage("Internal server error");
-			return new ResponseEntity<Response>(HttpStatus.INTERNAL_SERVER_ERROR); // Case for exception
-		}
+		Response resp=regService.registerService(user, bindResult);
+		logger.info("Entered after registerService in insertUser()" + resp);
+		
+		if(resp.getStatus()==-1)
+			return new ResponseEntity<Response>(resp, HttpStatus.BAD_REQUEST);
+		if(resp.getStatus()==20)
+			return new ResponseEntity<Response>(resp, HttpStatus.CONFLICT);
+		if(resp.getStatus()==1)
+			return new ResponseEntity<Response>(HttpStatus.OK); 
+			
+		return new ResponseEntity<Response>(HttpStatus.INTERNAL_SERVER_ERROR);
 
 	}
 
@@ -127,10 +109,7 @@ public class FundooRegisterController {
 	@RequestMapping(value = "register", method = RequestMethod.POST)
 	public String adduser(@ModelAttribute("user1") Register user, BindingResult res, ModelMap ma) {
 		System.out.println(user);
-		// ModelAndView mav=new ModelAndView("login","Registration",user);
-		// System.out.println(mav);
-		// impl.insertUser(user);
-
+		
 		formvalid.validate(user, res);
 
 		if (res.hasErrors())
@@ -150,14 +129,11 @@ public class FundooRegisterController {
 			json = jms1.receiveMessage();
 			System.out.println(json);
 		} catch (JMSException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 
-		// System.out.println(modelmap);
-		// ModelAndView mav=new ModelAndView
 
-		// return "redirect:/" ;
 		return "register";
 	}
 	
