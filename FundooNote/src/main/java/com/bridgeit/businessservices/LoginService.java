@@ -27,7 +27,7 @@ public class LoginService {
 	Logger logger = Logger.getLogger(LoginService.class);
 	
 	TokenGeneration tokenobject = new TokenGeneration();
-	
+	/*Generating TOken */
 	public TokenGeneration loginService(Login user)
 	{
 		Register reg = service.getUser(user);
