@@ -74,4 +74,13 @@
 		update fundoonote set remainder=#{remainder} where user_id=#{user.user_id}
 		and notes_id=#{notes_id}
 	</update>
+	
+	<insert id="collabNote" parameterType="CollabBean">
+	
+	insert into fundoonotecollab values(#{user.user_id},#{note.notes_id},#{collaborated_Id})
+	</insert>
+	
+	<select id="selectColabNotes" parameterType="int" resultType="int">
+	select collaborated_Id from fundoonotecollab where notes_id=#{notes_id}
+	</select>
 </mapper> 

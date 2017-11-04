@@ -1,5 +1,6 @@
 package com.bridgeit.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -18,11 +19,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bridgeit.businessservices.NoteBusinessService;
 
 import com.bridgeit.json.Response;
+import com.bridgeit.model.Collaborator;
 import com.bridgeit.model.Note;
 import com.bridgeit.model.Register;
 import com.bridgeit.utilityservices.ElasticSearch;
 import com.bridgeit.utilityservices.JMSProducerElasticSearch;
 import com.bridgeit.utilityservices.NoteService;
+import com.bridgeit.utilityservices.UserService;
 
 @Controller
 @RequestMapping("auth/")
@@ -30,8 +33,11 @@ public class NoteController {
 
 	private static final Logger logger = Logger.getLogger(NoteController.class);
 	@Autowired
-	NoteService service;
+	NoteService noteService;
 
+	@Autowired
+	UserService userService;
+	
 	@Autowired 
 	NoteBusinessService noteBusinessService;
 	@Autowired
@@ -47,7 +53,7 @@ public class NoteController {
 	public ResponseEntity<Response> insertNote(@RequestBody Note note1) {
 		logger.info("Before Inserting Note");
 		logger.info(note1);
-		service.insertNote(note1);
+		noteService.insertNote(note1);
 		logger.info("After Insertion of the Note");
 		return new ResponseEntity<Response>(resp, HttpStatus.OK);
 
@@ -57,7 +63,7 @@ public class NoteController {
 	@ResponseBody
 	public ResponseEntity<Response> updateNote(@RequestBody Note note2) {
 		logger.info("Before Update Note");
-		service.updateNote(note2);
+		noteService.updateNote(note2);
 		logger.info("After Update Note");
 		return new ResponseEntity<Response>(resp, HttpStatus.OK);
 	}
@@ -67,7 +73,7 @@ public class NoteController {
 	public ResponseEntity<Response> deleteNote(@RequestBody Note note3) {
 		
 		logger.info("Before Delete Note");
-		service.deleteNode(note3);
+		noteService.deleteNode(note3);
 		logger.info("After deleting note");
 		logger.info("Deleting in Elastic Search");
 		elasticSearch.deleteElasticNotes(note3.getNotes_id());
@@ -81,7 +87,7 @@ public class NoteController {
 		logger.info("Before getNotebyId");
 
 		logger.info(note4);
-		note4 = service.getNotebyId(note4);
+		note4 = noteService.getNotebyId(note4);
 		logger.info(note4);
 		logger.info("After getNotebyId");
 		resp.setMessage(note4.toString());
@@ -94,7 +100,7 @@ public class NoteController {
 		logger.info("Before selectAllNotes");
 
 		//List<Note> notes = service.selectAllNotes(note5);
-		List<Note> notes = service.selectAllFundooNotes();
+		List<Note> notes = noteService.selectAllFundooNotes();
 		logger.info("After selectAllNotes");
 		logger.info(notes);
 /*		List<Note> notes = service.selectAllNotes(note5);
@@ -110,7 +116,7 @@ public class NoteController {
 
 	
 		logger.info("Fetching All Notes");
-		List<Note> notes=service.selectAllFundooNotes();
+		List<Note> notes=noteService.selectAllFundooNotes();
 		logger.info(notes);
 		/*elasticSearch.indexAllNotes(notes);*/
 		/*elasticSearch.searchElasticNotes(searchString, userid);*/
@@ -120,7 +126,7 @@ public class NoteController {
 	}
 
 	
-	@RequestMapping(value = "serchAllNotesElastic", method = RequestMethod.POST, consumes = "application/json")
+	@RequestMapping(value = "searchAllNotesElastic", method = RequestMethod.POST, consumes = "application/json")
 	@ResponseBody
 	public ResponseEntity<Response> selectAllNotesElastic(@RequestBody Map<String, Object> searchMap) {
 
@@ -140,7 +146,7 @@ public class NoteController {
 	@ResponseBody
 	public ResponseEntity<Response> archiveNote(@RequestBody Note note6) {
 		logger.info("Archiving the selected user node");
-		service.archiveNote(note6);
+		noteService.archiveNote(note6);
 		logger.info("After archiving the node");
 		resp.setStatus(note6.getUser().getUser_id());
 		resp.setMessage("Archived");
@@ -151,7 +157,7 @@ public class NoteController {
 	@ResponseBody
 	public ResponseEntity<Response> trashNote(@RequestBody Note note7) {
 		logger.info("Trashing the selected user node");
-		service.trashNote(note7);
+		noteService.trashNote(note7);
 		logger.info("After trashing the node");
 		resp.setStatus(note7.getUser().getUser_id());
 		resp.setMessage("Archived");
@@ -167,17 +173,57 @@ public class NoteController {
 		return new ResponseEntity<Response>(resp, HttpStatus.OK);
 	}
 
+	
 	@RequestMapping(value = "setRemainder", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Response> setRemainder(@RequestBody Note note9) {
 		logger.info("Setting Remainder");
 		logger.info(note9);
-		service.setRemainder(note9);
+		noteService.setRemainder(note9);
 		logger.info("Remainder Set");
 		resp.setStatus(100);
 		resp.setMessage("Remainder for the user " + note9.getUser().getUser_id() + " and note number of a "
 				+ note9.getNotes_id() + " has been set succesfully to the note by the user");
 		return new ResponseEntity<Response>(resp, HttpStatus.OK);
 	}
+		
+	@RequestMapping(value="collaborate",method =RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<Response>setCollaborate(/*@RequestBody Map<String,String> notemap ,*/@RequestBody Collaborator collaborator)
+	{
+		List<Register> userList=new ArrayList<Register>();
+		int collab_id,notes_id;
+		boolean userValue;
+		
+		logger.info("Inside Colloboration");
+		
 
+
+	
+		
+		Register reg=userService.checkUserByEmail(collaborator.getCollaboratorEmail());
+		logger.info(reg);
+		collab_id=reg.getUser_id();
+		notes_id=collaborator.getNote().getNotes_id();
+		
+		userList=noteService.selectColabNotes(collaborator.getUser().getUser_id());
+		userValue=userList.contains(notes_id);
+		logger.info(userValue);
+		
+		if(!userValue)
+		{
+		collaborator.setCollaborated_Id(reg.getUser_id());
+		logger.info("After Insertion into the database");
+		resp.setStatus(1000);
+		resp.setMessage("Collaboration Done");
+		}
+		else
+		{
+			logger.info("Already Collaborated");
+		}
+		
+		return new ResponseEntity<Response>(resp,HttpStatus.OK);
+	}
+	
+	
 }

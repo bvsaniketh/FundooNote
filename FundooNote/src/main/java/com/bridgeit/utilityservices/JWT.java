@@ -26,7 +26,7 @@ public class JWT {
 		long currentmillis=System.currentTimeMillis();
 		Date now=new Date(currentmillis);
 		logger.info(now);
-		System.out.println("----------------------"+reg);
+		logger.info("----------------------"+reg);
 		SignatureAlgorithm signaturealgorithm=SignatureAlgorithm.HS256;
 		JwtBuilder builder=Jwts.builder().setId(CLIENT_ID)
 				.setIssuedAt(now)

@@ -1,5 +1,7 @@
 package com.bridgeit.utilityservices;
 
+import org.apache.log4j.Logger;
+
 import com.bridgeit.model.Register;
 
 public class EmailScheduler implements Runnable{
@@ -7,6 +9,7 @@ public class EmailScheduler implements Runnable{
 	Register user;
 	Email email;
 	
+	static Logger logger=Logger.getLogger(EmailScheduler.class);
 	
 	public EmailScheduler(Register user, Email email) {
 		this.user = user;
@@ -16,7 +19,7 @@ public class EmailScheduler implements Runnable{
 
 	//@Override
 	public void run() {
-		System.out.println("Sending Email");
+		logger.info("Sending Email");
 		email.sendEmailsuccess(user);
 	}
 

@@ -22,7 +22,7 @@ public class SpringJMS {
 		springJmsProducer.sendMessage("Hey Dude");
 		logger.info("Inside JMS");
 		SpringJmsConsumer springJmsConsumer=(SpringJmsConsumer) context.getBean("springJmsConsumer");
-		System.out.println("Consumer recieves " + springJmsConsumer.receiveMessage());
+		logger.info("Consumer recieves " + springJmsConsumer.receiveMessage());
 		
 		}
 		/*finally 

@@ -27,21 +27,21 @@ public class GoogleLoginController
 	@RequestMapping(value="/loginG")
 	public void SocialLogin(HttpServletRequest request,HttpServletResponse response)
 	{
-		System.out.println("Inside login with Google");
+		logger.info("Inside login with Google");
 		String lsr=request.getRequestURL().toString();
-		System.out.println(lsr);
+		logger.info(lsr);
 		String apiRedirectUrl=lsr.substring(0,lsr.lastIndexOf('/'));
-		System.out.println(apiRedirectUrl);
+		logger.info(apiRedirectUrl);
 		String stateCode=UUID.randomUUID().toString();
-		System.out.println(stateCode);
-		System.out.println(request.getSession());
+		logger.info(stateCode);
+		logger.info(request.getSession());
 		request.getSession().setAttribute("STATE", stateCode);
 		String gmailUrl=GoogleLoginByRest.getGmailUrl(apiRedirectUrl,stateCode);
-		System.out.println(gmailUrl);
+		logger.info(gmailUrl);
 		
 		try {
 			response.sendRedirect(gmailUrl);
-			System.out.println("Redirected successfully");
+			logger.info("Redirected successfully");
 		}catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -55,7 +55,7 @@ public class GoogleLoginController
 //		{
 //			response.sendRedirect("welcomelogin");
 //		}
-		System.out.println("In post google");
+		logger.info("In post google");
 		String sessioncheck=(String) request.getSession().getAttribute("STATE");
 		String statecode=request.getParameter("state");
 		if(sessioncheck==null||!sessioncheck.equals(statecode))
@@ -73,22 +73,22 @@ public class GoogleLoginController
 		if(error != null && error.trim().isEmpty()) {
 			
 			logger.error(error);
-			System.out.println("Error is present here");
+			logger.info("Error is present here");
 			response.sendRedirect("login");
 		}
 		String authcode=request.getParameter("code");
-		System.out.println(authcode);
+		logger.info(authcode);
 		
 		String lsr=request.getRequestURL().toString();
 		String apiRedirectUrl=lsr.substring(0,lsr.lastIndexOf('/'));
 		GoogleProfile profile=GoogleLoginByRest.authUser(authcode,apiRedirectUrl);
-		//System.out.println(profile);
+		
 		
 		String email = profile.getEmails().get(0).getValue();
 		
 		Register user = service.checkUserByEmail(email);
 		
-		System.out.println(profile);
+		logger.info(profile);
 		if(user == null) {
 			user = new Register();
 			String name = profile.getDisplayName();

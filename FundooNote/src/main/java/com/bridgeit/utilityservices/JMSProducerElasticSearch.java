@@ -28,7 +28,7 @@ public class JMSProducerElasticSearch {
 	
 	Logger logger=Logger.getLogger(JMSProducerElasticSearch.class);
 	
-	@Scheduled(fixedDelay=1000000)
+	/*@Scheduled(fixedDelay=1000000)*/
 	public void sendNotesToJMS()
 	
 	{
@@ -48,7 +48,7 @@ public class JMSProducerElasticSearch {
 			String userjson = gson.toJson(notes);
 			Message message=session.createTextMessage(userjson);
 			
-			System.out.println("These notes are from JMSProducer" +" " + notes);
+			logger.info("These notes are from JMSProducer" +" " + notes);
 			producer.send(message);
 			session.close();
 		} catch (JMSException e) {

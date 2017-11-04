@@ -1,6 +1,7 @@
 package com.bridgeit.model;
 
 import java.util.Date;
+import java.util.List;
 
 /*import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;*/
@@ -18,6 +19,8 @@ public class Note {
 	private boolean trash;
 	private boolean deletefromtrash;
 	private Date Remainder;
+	private int collab_id;
+	
 	
 	public int getNotes_id() {
 		return notes_id;
@@ -73,13 +76,25 @@ public class Note {
 	public void setRemainder(Date remainder) {
 		Remainder = remainder;
 	}
+
+	public int getCollab_id() {
+		return collab_id;
+	}
+	public void setCollab_id(int collab_id) {
+		this.collab_id = collab_id;
+	}
 	
 	@Override
 	public String toString() {
 		return "Note [notes_id=" + notes_id + ", title=" + title + ", description=" + description + ", user=" + user
 				+ ", lastaccessdate=" + lastaccessdate + ", archive=" + archive + ", trash=" + trash
-				+ ", deletefromtrash=" + deletefromtrash + ", Remainder=" + Remainder + "]";
+				+ ", deletefromtrash=" + deletefromtrash + ", Remainder=" + Remainder + ", collab_id=" + collab_id
+				+ "]";
 	}
+
+
+
+	
 	
 	
 

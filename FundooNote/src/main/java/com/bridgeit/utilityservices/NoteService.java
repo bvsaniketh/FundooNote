@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 
 import com.bridgeit.dao.NoteMapperImpl;
 import com.bridgeit.dao.UserMapperImpl;
+import com.bridgeit.model.Collaborator;
 import com.bridgeit.model.Note;
+import com.bridgeit.model.Register;
 
 @Service
 public class NoteService {
@@ -59,7 +61,16 @@ public class NoteService {
 		List<Note> notes=mapper.selectAllFundooNotes();
 		return notes;
 	}
-
 	
+	public void collabNote(Collaborator collaborator)
+	{
+		mapper.collabNote(collaborator);
+	}
+
+	public List<Register> selectColabNotes(int notes_id)
+	{
+		List<Register> notes=mapper.selectColabNotes(notes_id);
+		return notes;
+	}
 	
 }

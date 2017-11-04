@@ -5,10 +5,12 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.TextMessage;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
+import com.bridgeit.controller.GoogleLoginController;
 import com.bridgeit.utilityservices.Email;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -22,6 +24,7 @@ public class SpringJmsConsumer {
 	
 	private Destination destination;
 	private JmsTemplate jmsTemplate;
+	private static Logger logger=Logger.getLogger(SpringJmsConsumer.class);
 	
 	public Destination getDestination() {
 		return destination;
@@ -43,7 +46,7 @@ public class SpringJmsConsumer {
 		/*String userjson=textmessage.getText();*/
 		JsonObject json= (JsonObject) new JsonParser().parse(textmessage.getText());
 		String user_email=json.get("email").getAsString();
-		System.out.println(user_email +"This is the user's email for sending mail");
+		logger.info(user_email +"This is the user's email for sending mail");
 		return textmessage.getText();
 	}
 }

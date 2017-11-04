@@ -86,7 +86,7 @@ public class FundooRegisterController {
 	// Testing API for Mapping
 	@RequestMapping(value = "test")
 	public void Test() {
-		System.out.println("TEst");
+		logger.info("TEst");
 
 	}
 
@@ -108,7 +108,7 @@ public class FundooRegisterController {
 
 	@RequestMapping(value = "register", method = RequestMethod.POST)
 	public String adduser(@ModelAttribute("user1") Register user, BindingResult res, ModelMap ma) {
-		System.out.println(user);
+		logger.info(user);
 		
 		formvalid.validate(user, res);
 
@@ -120,14 +120,14 @@ public class FundooRegisterController {
 		service.insertuser(user);
 		Gson gson = new Gson();
 		String userjson = gson.toJson(user);
-		System.out.println(userjson + "This is the user's json");
+		logger.info(userjson + "This is the user's json");
 		ma.addAttribute("reg", "User has been Registered sucessfully");
 		jms.sendMessage(userjson);
-		System.out.println("Receiving from Queue jms");
+		logger.info("Receiving from Queue jms");
 		String json;
 		try {
 			json = jms1.receiveMessage();
-			System.out.println(json);
+			logger.info(json);
 		} catch (JMSException e) {
 			
 			e.printStackTrace();

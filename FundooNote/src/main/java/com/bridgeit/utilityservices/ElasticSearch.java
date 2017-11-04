@@ -44,9 +44,9 @@ public class ElasticSearch {
 	NoteService noteservice;
 
 	public void indexAllNotes(List<Note> notes) {
-		System.out.println("Indexing..");
-		System.out.println(notes);
+		logger.info("Indexing..");
 		logger.info(notes);
+		
 		try {
 			client = new PreBuiltTransportClient(Settings.EMPTY)
 					.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("localhost"), 9300));
@@ -97,7 +97,7 @@ public class ElasticSearch {
 
 	public void searchElasticNotes(String searchString, int userid) {
 		TransportClient client = null;
-		System.out.println("UID..." + userid);
+		logger.info("UID..." + userid);
 		try {
 
 			client = new PreBuiltTransportClient(Settings.EMPTY)
@@ -121,7 +121,7 @@ public class ElasticSearch {
 			for (SearchHit hit : hitArray) {
 
 				String jsonContent = hit.getSourceAsString();
-				System.out.println("Content1: " + jsonContent + "\n");
+				logger.info("Content1: " + jsonContent + "\n");
 				note = new Gson().fromJson(jsonContent, Note.class);
 				notesSearch.add(note);
 
@@ -163,7 +163,6 @@ public class ElasticSearch {
 			DeleteResponse response=client.prepareDelete("fundoo","notes",String.valueOf(notesid)).get();
 			logger.info(response);
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

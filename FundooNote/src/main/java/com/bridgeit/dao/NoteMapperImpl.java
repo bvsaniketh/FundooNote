@@ -6,7 +6,9 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
+import com.bridgeit.model.Collaborator;
 import com.bridgeit.model.Note;
+import com.bridgeit.model.Register;
 import com.bridgeit.mybatisutility.MyBatisUtil;
 
 @Service
@@ -184,6 +186,45 @@ public class NoteMapperImpl{
 		}
 		return notes;
 	}
+	
+	public void collabNote(Collaborator collaborator)
+	{
+		session=MyBatisUtil.getSqlSessionFactory().openSession();
+		logger.info("Inside note mapper impl");
+		try
+		{
+		NoteMapper notemapper=session.getMapper(NoteMapper.class);
+		notemapper.collabNote(collaborator);
+		session.commit();
+		logger.info("Collaborated into the database");
+		}
+		finally
+		{
+			session.close();
+		}
+		
+	}
+	
+	public List<Register> selectColabNotes(int notes_id)
+	
+	
+	{
+	session=MyBatisUtil.getSqlSessionFactory().openSession();
+	List<Register>notes;
+	
+		try
+		{	logger.info(notes_id);
+			NoteMapper notemapper=session.getMapper(NoteMapper.class);
+			notes =notemapper.selectColabNotes(notes_id);
+			session.commit();
+			logger.info(notes);
+			return notes;
+		}
+		finally
+		{
+			session.close();
+		}
+	}	
 	
 
 }

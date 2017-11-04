@@ -3,6 +3,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.bridgeit.model.Collaborator;
 import com.bridgeit.model.Login;
 import com.bridgeit.model.Note;
 import com.bridgeit.model.Register;
@@ -21,8 +22,9 @@ import io.restassured.response.Response;
 public class TestLoginController {
 
 	static Login user1,user2,user3,user4,user5;
-	static Register reg1, reg2, reg3, reg4, reg5;
-	static Note note1, note2, note3, note4, note5, note6;
+	static Register reg1, reg2, reg3, reg4, reg5,reg6;
+	static Note note1, note2, note3, note4, note5, note6,note7;
+	static Collaborator collab;
 	Logger logger = Logger.getLogger(TestRegisterController.class);
 
 	@BeforeClass
@@ -92,6 +94,19 @@ public class TestLoginController {
 		reg4 = new Register();
 		reg4.setUser_id(2);
 		note6.setUser(reg4);
+		
+		
+		note7=new Note();
+		reg6=new Register();
+		reg6.setUser_id(1);
+		note7.setNotes_id(1);
+		collab =new Collaborator();
+		collab.setUser(reg6);
+		collab.setNote(note7);
+		collab.setCollaboratorEmail("ft@gmail.com");
+		
+		
+		
 	}
 
 	@Test
@@ -100,7 +115,7 @@ public class TestLoginController {
 		// String jsonString =user1.toJSONString;
 
 		System.out.println("testRegister user exists");
-		Response resp = given().contentType("application/json").body(user2).when().post("fundoologin");
+		Response resp = given().contentType("application/json").body(user5).when().post("fundoologin");
 		logger.info(resp.asString());
 		resp.then().statusCode(200);
 	}
@@ -181,7 +196,7 @@ public class TestLoginController {
 	@Ignore
 	public void testFilter6() {
 		// String jsonString =user1.toJSONString;
-		String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMjM0NSIsImlhdCI6MTUwOTQzMzU0Miwic3ViIjoiSldUIFRva2VuIiwiaXNzIjoiQW5pa2V0aCdzIFRva2VucyIsIk5hbWUiOiJCaGFyYXRoaSIsIk1vYmlsZSI6NzM3MywiSWQiOjIsImV4cCI6MTUwOTQ3MzU0Mn0.EbwVSKQllhhaxtBEx2CcRLWfVpQpTlc0Dl9zFlcsAW0";
+		String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMjM0NSIsImlhdCI6MTUwOTUxNTU4Nywic3ViIjoiSldUIFRva2VuIiwiaXNzIjoiQW5pa2V0aCdzIFRva2VucyIsIk5hbWUiOiJBbmlrZXRoIEJvbmRhZGEiLCJNb2JpbGUiOjEyMzQ1LCJJZCI6MSwiZXhwIjoxNTA5NTU1NTg3fQ.Hq4kIBMnyVxKOJ4MIIomd-Mz24Za6bB127KFrvSWU_k";
 		System.out.println("Testing Elastic Notes Functionalities");
 		/* Response resp = */given().contentType("application/json").header("token", token).body(note6).when()
 				.post("auth/selectAllFundooNotes").then().statusCode(200);
@@ -200,7 +215,7 @@ public class TestLoginController {
 		map.put("userid", 5);
 		map.put("searchString", content);
 
-		given().contentType(ContentType.JSON).header("token", token).body(map).when().post("auth/serchAllNotesElastic")
+		given().contentType(ContentType.JSON).header("token", token).body(map).when().post("auth/searchAllNotesElastic")
 				.then().statusCode(200);
 
 	}
@@ -228,6 +243,21 @@ public class TestLoginController {
 		given().contentType(ContentType.JSON).header("token", token).body(note6).when().post("auth/deleteNote")
 				.then().statusCode(200);
 
+	}
+	
+	
+	@Test
+	/*@Ignore*/
+	public void testFilter10()
+	{
+		
+		String token="eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMjM0NSIsImlhdCI6MTUwOTc3MzQ1MSwic3ViIjoiSldUIFRva2VuIiwiaXNzIjoiQW5pa2V0aCdzIFRva2VucyIsIk5hbWUiOiJBbmlrZXRoIEJvbmRhZGEiLCJNb2JpbGUiOjEyMzQ1LCJJZCI6MSwiZXhwIjoxNTA5ODEzNDUxfQ.7dr9uGECLcVAlquFaz-J2Hn3Ia4SFoqLhPVusbFTc_M";
+		Map<String,String> collabMap=new HashMap<String,String>();
+		collabMap.put("email","bmsbharathi@gmail.com");
+		
+		System.out.println("Testing Collaboration");
+		given().contentType(ContentType.JSON).header("token",token)/*.body(collabMap)*/.body(collab).when().post("auth/collaborate")
+				.then().statusCode(200);
 	}
 
 }
